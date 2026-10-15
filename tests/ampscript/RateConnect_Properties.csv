@@ -1,0 +1,20 @@
+hotelier_id,property_name,commission_rate
+H1,Hotel Rheinblick,12
+H2,Pension Lindenhof,10.5
+H2,Villa Rosengarten,11
+H2,Altstadt Suites,14
+H2,Parkhotel Benrath,15
+H2,Hotel Am Hafen,12
+H2,Seehotel Kaiserswerth,13
+H2,Hotel Rheinblick,12
+H3,Haus A,10
+H3,Haus B,10
+H3,Haus C,10
+H3,Haus D,10
+H3,Haus E,10
+H4,Hotel Nord,
+H4,Hotel Süd,9
+H5,Gasthof Zum Löwen,0
+H6,Zur Post,12
+H6,Ärztehaus am See,10
+H6,Bergblick,11

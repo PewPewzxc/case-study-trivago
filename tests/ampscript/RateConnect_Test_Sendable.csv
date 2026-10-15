@@ -1,0 +1,11 @@
+SubscriberKey,EmailAddress,hotelier_id,hotelier_name,property_name,commission_rate
+single,,H1,Maria,,
+multi_seven,,H2,Maria,,
+multi_exactly_five,,H3,Jonas,,
+multi_rate_missing,,H4,Lena,,
+no_name_no_data,,H404,,,
+fallback_columns,,H405,Ali,Gasthaus Krone,11
+name_with_spaces,,H1,  Maria  ,,
+no_id_column,,,Maria,,
+rate_zero,,H5,Jürgen,,
+umlaut_sort,,H6,Kerstin,,

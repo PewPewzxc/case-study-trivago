@@ -1,0 +1,9 @@
+﻿SubscriberKey,hotelier_id,hotelier_name,property_name,commission_rate
+01-one-property,H1,Maria,,
+02-three-properties,H2,Jonas,,
+03-seven-properties-umlauts,H3,Familie Öztürk,,
+04-twelve-properties-long-name,H4,Sophie-Charlotte von Hohenberg-Lichtenstein,,
+05-no-name,H5,,,
+06-no-property-data,H6,Lena,,
+07-data-only-on-hotelier-row,H7,Ali,Gasthaus Krone,11
+08-long-property-name,H8,Thomas,,
