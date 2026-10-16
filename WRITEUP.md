@@ -12,6 +12,19 @@ Alireza Pakseresht Koubijari · Email Development & Marketing Automation intern 
 
 **I questioned the design.** A few things looked off. I couldn't tell whether they were decisions or mistakes, so I corrected them and I'm flagging them: the trivago icon's circle was cut off at the top and bottom, the mobile logo wasn't centered, and the line under "Got more than one property?" ran out of its text box. While checking the logo, Claude Code also found empty space on its right side, which pushed it off-center.
 
+<table>
+<tr>
+<td><img src="screenshots/design/01-icon-cut-off.png" width="240" alt="The trivago icon in Figma with flat top and bottom, next to the full circle in the build"><br>The icon's circle is cut off at the top and bottom.</td>
+<td><img src="screenshots/design/04-logo-empty-space.png" width="300" alt="The Rate Connect logo's box in Figma, with empty space on the right marked in red"><br>The logo's box has 26px of empty space on the right.</td>
+</tr>
+<tr>
+<td><img src="screenshots/design/02-mobile-logo-off-center.png" width="380" alt="Mobile header in Figma with the logo left of center, next to the centered logo in the build"><br>So the mobile logo sits about 13px left of center.</td>
+<td><img src="screenshots/design/03-banner-text-overflow.png" width="380" alt="Mobile banner in Figma with its text cut off at both edges, next to the build where it wraps"><br>On mobile, the text under "Got more than one property?" runs out of its box.</td>
+</tr>
+</table>
+
+*In each image, the Figma file is on the left (exported through Figma's MCP) and the build is on the right. The logo image shows Figma only.*
+
 **I tested where it matters.** A browser preview proves very little, so the email went to my own iPhone, Android phones and Windows PC, in light and dark mode. When dark mode broke, I didn't patch blindly: I built one test email with three or four candidate fixes per problem side by side, sent it to eight app setups, and kept the winners (`tests/RESULTS.md`). Then Email on Acid covered the apps I don't own, including Yahoo, Samsung Mail, Outlook on Mac and on phones, and Outlook on the web in dark mode.
 
 **I asked the apps before fighting them.** After rounds of dark-mode workarounds, I asked whether the footer could simply stay the same in every mode. That led to `color-scheme: light only`, a setting the Gmail app has respected for Google accounts since a recent update (Dyspatch reported the change, and my own phones confirmed it). With it, the Gmail app stops recoloring the email for Google accounts (with an Outlook account inside the Gmail app it doesn't; see below). The earlier workarounds stay in as a fallback for app versions that don't respect it.
