@@ -11,7 +11,7 @@
 AMPscript only runs inside Salesforce Marketing Cloud, and there is no free sandbox. This script
 executes the part of the language this email uses, so the logic can be tested on any PC:
 
-  - VAR, SET, IF / ELSEIF / ELSE / ENDIF, FOR ... TO ... DO / NEXT, comments
+  - VAR, SET, IF / ELSEIF / ELSE / ENDIF, FOR ... TO ... DO / NEXT (its counter must not be declared), comments
   - inline output (%%=v(@x)=%%) and personalisation strings (%%field%%)
   - the functions in FUNCS below. Anything else stops with an error, so an invented
     or misspelt function is caught instead of silently printing nothing.
@@ -76,7 +76,7 @@ class Parser:
     """Turns the item list into a tree of statements."""
 
     def __init__(self, its):
-        self.its, self.i = its, 0
+        self.its, self.i, self.declared = its, 0, set()
 
     def peek(self):
         it = self.its[self.i] if self.i < len(self.its) else ("end", None)
@@ -106,7 +106,7 @@ class Parser:
             self.i += 1
             if word == "VAR":
                 while self.peek() and self.peek().startswith("@"):
-                    self.take()
+                    self.declared.add(self.take().lower())
                     if self.peek() == ",":
                         self.take()
             elif word == "SET":
@@ -131,6 +131,10 @@ class Parser:
                 nodes.append(("if", branches))
             elif word == "FOR":
                 var = self.take().lower()
+                if var in self.declared:
+                    # Salesforce's AMPscript reference (Language Elements): declaring a FOR counter with VAR
+                    # "will result in a validation or runtime error".
+                    raise AmpError(f"FOR counter {var} was declared with VAR; Marketing Cloud rejects that")
                 self.take("=")
                 start = self.expr()
                 self.take("TO")
@@ -230,7 +234,7 @@ def lookup_ordered_rows(ctx, de, count, order, field, value):
     # shortcut: approximates the default collation; for exact order, compare with a real preview.
     fold = lambda v: normalize("NFKD", text(v)).encode("ascii", "ignore").decode().lower()
     rows.sort(key=lambda r: fold(r.get(col)), reverse=direction.strip().upper() == "DESC")
-    return rows[:2000 if int(count) == 0 else int(count)]
+    return rows[:2000 if int(count) < 1 else min(int(count), 2000)]   # below 1 = all, up to 2,000 (docs)
 
 
 def row(rows, i):
