@@ -39,8 +39,8 @@ Alireza Pakseresht Koubijari · Email Development & Marketing Automation intern 
 - **Trust real devices over testing tools, and check the tools themselves.** This is the one I'd most want you to know about. **Email on Acid showed the footer as an empty white box in dark mode on all five of its Gmail Pixel test phones (Pixel 6 to 10, Android 12 to 16; `screenshots/40` shows the Pixel 6). On a real Pixel 8 Pro with Android 17, on my own Android phone and on two other Android devices, the same email looks exactly right.** My best explanation is timing: the Gmail app (with a Google account) only started respecting `color-scheme: light only`, which tells the app not to recolor the email. That's the setting this email relies on. A testing tool can run an older Gmail version, or simulate dark mode its own way, and then it shows problems that real readers with an up-to-date Gmail never see. I documented this one and left the code alone.
 
 > [!CAUTION]
-> $\color{red}{\textsf{If your testing tools show Android dark-mode problems in emails like this one, the email itself may not be the problem: the tools may run an}}$
-> $\color{red}{\textsf{older Gmail version that doesn't respect the light-only setting yet. It's better to also check on other, real devices.}}$
+>If your testing tools show Android dark-mode problems in emails like this one, the email itself may not be the problem: the tools may run an}}$
+older Gmail version that doesn't respect the light-only setting yet. It's better to also check on other, real devices.}}$
 
 - **Make every trade-off visible.** Where email can't do what the design shows, I chose, and wrote down what each choice costs:
   - **700px width, kept as designed.** I stayed faithful to the design. The cost is in classic Outlook: it can't do "shrink, but never wider than 700px", so it gets a fixed 700px table, and in a reading pane narrower than that, the email doesn't shrink to fit.
