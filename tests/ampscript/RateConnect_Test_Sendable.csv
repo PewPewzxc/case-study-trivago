@@ -1,4 +1,4 @@
-SubscriberKey,EmailAddress,hotelier_id,hotelier_name,property_name,commission_rate
+﻿SubscriberKey,EmailAddress,hotelier_id,hotelier_name,property_name,commission_rate
 single,,H1,Maria,,
 multi_seven,,H2,Maria,,
 multi_exactly_five,,H3,Jonas,,
@@ -9,3 +9,16 @@ name_with_spaces,,H1,  Maria  ,,
 no_id_column,,,Maria,,
 rate_zero,,H5,Jürgen,,
 umlaut_sort,,H6,Kerstin,,
+name_only_spaces,,H1,   ,,
+id_with_spaces,,  H1 ,Maria,,
+fallback_only_spaces,,H404,Ali,   ,  
+spaces_in_property_rows,,H7,Jonas,,
+blank_property_name,,H8,Lena,,
+multi_exactly_six,,H10,Jonas,,
+id_other_case,,h1,Maria,,
+lookup_beats_fallback,,H1,Maria,Old Name,99
+special_characters,,H11,Tom &amp Jerry <GmbH>,,
+rate_with_percent,,H12,Lena,,
+rates_with_percent_in_rows,,H13,Lena,,
+multi_blank_name,,H14,Lena,,
+fallback_rate_without_name,,H404,Ali,,11

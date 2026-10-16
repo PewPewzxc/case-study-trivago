@@ -1,4 +1,4 @@
-hotelier_id,property_name,commission_rate
+﻿hotelier_id,property_name,commission_rate
 H1,Hotel Rheinblick,12
 H2,Pension Lindenhof,10.5
 H2,Villa Rosengarten,11
@@ -18,3 +18,18 @@ H5,Gasthof Zum Löwen,0
 H6,Zur Post,12
 H6,Ärztehaus am See,10
 H6,Bergblick,11
+H7,  Hotel Seeblick  , 9 
+H7,Pension Waldrand,   
+H8,   ,12
+H10,Hotel Anker,10
+H10,Hotel Brise,11
+H10,Hotel Dorf,12
+H10,Hotel Eiche,13
+H10,Hotel Fluss,14
+H10,Hotel Garten,15
+H11,B&B <Rhein> & Co,12
+H12,Hotel Prozent,12%
+H13,Alpha Haus,11 %
+H13,Beta Haus, % 
+H14,   ,12
+H14,Zeta Hotel,9

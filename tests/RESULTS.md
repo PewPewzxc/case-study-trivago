@@ -1,6 +1,6 @@
 # Dark-mode test results
 
-`dark-mode-variants.html` was sent with `tools/send_test.py` and opened in eight app setups (Gmail on the web, the Gmail app on iPhone (with a Google account and with an Outlook account), the Gmail app on Android, Apple Mail, classic Outlook, new Outlook and Outlook on the web), in light and dark mode. Each numbered row of the sheet is one candidate fix for the same problem. The 51 screenshots are in `tests/screenshots/` (addresses blurred). This file records what each app did, which fix won, and what to do differently next time. Rounds 1 and 2 were the first two real-inbox sends of the email (top-level `screenshots/05` to `18`, then `19` to `38` after the first fixes). Then came this test sheet, then rounds 3 to 7 below.
+`dark-mode-variants.html` was sent with `tools/send_test.py` and opened in eight app setups (Gmail on the web, the Gmail app on iPhone (with a Google account and with an Outlook account), the Gmail app on Android, Apple Mail, classic Outlook, new Outlook and Outlook on the web), in light and dark mode. Each numbered row of the sheet is one candidate fix for the same problem. The 51 screenshots are in `tests/screenshots/` (addresses blurred). This file records what each app did, which fix won, and what to do differently next time. Rounds 1 and 2 were the first two real-inbox sends of the email (top-level `screenshots/05` to `18`, then `19` to `38` after the first fixes). Then came this test sheet, then rounds 3 to 8 below.
 
 ## How each app treats dark mode
 
@@ -15,7 +15,7 @@ Everything below follows from this table. It shows how the apps behaved before r
 | Gmail app, Android, Google account | Partial: light backgrounds turn dark; dark backgrounds and white text stay. Background images do not keep the header white. |
 | Classic Outlook (Windows) | Full inversion of every HTML color, text included. VML shapes and images are never changed, but text drawn on a VML shape is. |
 | New Outlook (Windows) | Partial: light backgrounds turn dark, navy turns slate gray, light text stays light. Honors background images; ignores CSS gradients and the `data-ogsb` rule. |
-| Outlook on the web | Only light mode was checked: correct. |
+| Outlook on the web (also called Microsoft 365 in the browser) | Light mode checked on my own account: correct. Dark mode was later checked via Email on Acid (round 6). |
 
 ## Results row by row
 
@@ -25,7 +25,7 @@ Everything below follows from this table. It shows how the apps behaved before r
 
 | Row | Classic Outlook, light | Classic Outlook, dark | Verdict |
 | --- | --- | --- | --- |
-| 1A today: VML shape, plain text color | ✓ | ✗ button and circle text dark; "Add a property" white on white | Broken |
+| 1A current: VML shape, plain text color | ✓ | ✗ button and circle text dark; "Add a property" white on white | Broken |
 | 1B VML shape, `mso-color-alt` on the text | ✗ button and circle text black | ✓ white text; ✗ "Add a property" still invisible | Breaks light mode |
 | 1C VML shape, gradient text trick | ✓ white text; ✗ "Add a property" invisible | ✓ all readable | **Winner for white text** (main button, circles) |
 | 1D No VML, plain table cells | ✓ square corners | ✓ recolored together, readable | **Winner for "Add a property"** |
@@ -34,7 +34,7 @@ Everything below follows from this table. It shows how the apps behaved before r
 
 | Row | Classic Outlook | New Outlook | Gmail iPhone | Gmail iPhone, non-Google | Gmail Android |
 | --- | --- | --- | --- | --- | --- |
-| 2A today: color + gradient | ✗ boxed | ✗ boxed | ✓ | ✓ | ✗ boxed |
+| 2A current: color + gradient | ✗ boxed | ✗ boxed | ✓ | ✓ | ✗ boxed |
 | 2B + white VML panel, wider `data-ogsb` rules | ✓ | ✗ boxed | ✓ | ✓ | ✗ boxed |
 | 2C white background image, no color | ✗ boxed, and gray in light mode | ✓ | ✓ | ✓ | ✗ boxed |
 
@@ -44,7 +44,7 @@ Winner: color + gradient on the outer cell (2A), a white background image (2C) a
 
 | Row | Classic Outlook | New Outlook | Gmail iPhone | Gmail iPhone, non-Google | Gmail Android |
 | --- | --- | --- | --- | --- | --- |
-| 3A today: outlined logo, footer may recolor | light footer, outlined logo, readable | slate footer, outline shows, readable | light footer, outlined logo, readable | the same, readable | ✓ navy |
+| 3A current: outlined logo, footer may recolor | light footer, outlined logo, readable | slate footer, outline shows, readable | light footer, outlined logo, readable | the same, readable | ✓ navy |
 | 3B plain logo, navy held by gradient + VML, text tricks | ✓ navy; ✗ links dark teal | slate, gradient ignored | navy, white text; links turn peach | ✗ **dark text on navy, unreadable** | ✓ |
 | 3C plain logo, navy held by background image + VML, `mso-color-alt` | ✓ navy, links white | ✓ exactly as designed | navy, white text; links turn peach | ✗ **dark text on navy, unreadable** | ✓ |
 
@@ -55,7 +55,7 @@ Winner: 3A for every app (its logo outline was removed later, in round 4), plus 
 - **Main button and circles:** VML shapes with the gradient text trick (`.mso-keep-white`, 1C) for classic Outlook. Everyone else: the button keeps its Gmail fix (gradient + blend-mode layers); the circles became images in round 3.
 - **"Add a property":** in round 3 a plain table cell in Outlook (1D); in round 4 a rounded VML button with an image label; finally a plain cell with live text again, square corners on purpose, so every word can be translated.
 - **Header:** white color + gradient on the outer cell (2A), tiny white background image on the inner cell (2C), white VML panel (2B).
-- **Footer:** the plain white logo (the outline from 3A was removed in round 4: the logo is never altered), plus a navy VML panel and `mso-color-alt` for classic Outlook, a tiny navy background image for new Outlook (round 5), and the Gmail blend-mode layers on the text as a fallback (round 5).
+- **Footer:** the plain white logo (the outline from 3A was removed in round 4: the logo is never altered), plus a navy VML panel and `mso-color-alt` for classic Outlook, a gradient for Gmail versions that ignore "light only" (round 8, replacing round 5's tiny navy background image), and the Gmail blend-mode layers on the text as a fallback (round 5).
 - **Support links:** inline blocks that stack by themselves (round 3). The banner went back to its table in round 4.
 - **`color-scheme: light only`** (round 4): the Gmail app stops recoloring the email for Google accounts.
 - **Removed:** the `[data-ogsb] .keep-white` rule. It did nothing.
@@ -65,8 +65,9 @@ Winner: 3A for every app (its logo outline was removed later, in round 4), plus 
 - **The Gmail app with a Google account:** with "light only" it no longer recolors the email, confirmed on my phones after round 4. Before that, Gmail on Android boxed the header logo in dark mode and once dropped the stylesheet (wider margins, numbers beside the text, the legal address as a blue link). The fixes from rounds 1 to 3 stay in the email as a fallback for app versions that do not honor "light only".
 - **Gmail app with a non-Google account (iPhone): not solved.** It does not respect "light only", and in dark mode the footer's legal text becomes almost unreadable (round 7).
 - **New Outlook:** in dark mode it still recolors the light sections (hero, banner, body) to dark tones and turns their text light. That is readable and normal. Holding those sections light is not safe: new Outlook would still turn the dark text light, giving light text on a light background.
+- **New Outlook and Microsoft 365 in the browser:** since round 8 the footer is slate gray in dark mode instead of navy. Readable; the price of fixing Email on Acid's Pixel phones.
 - **Classic Outlook:** footer links are white instead of light blue. "Add a property" has square corners there, a deliberate trade for translatable text.
-- **Covered by Email on Acid, not on my own devices:** Yahoo, Samsung Mail, Outlook on Mac and on phones, and Outlook on the web in dark mode (round 6). Only T-Online and the Pixel test phones showed problems there.
+- **Covered by Email on Acid, not on my own devices:** Yahoo, Samsung Mail, Outlook on Mac and on phones, and Outlook on the web in dark mode (round 6). Only T-Online and the Pixel test phones showed problems there, both fixed (rounds 6 and 8).
 
 ## Round 3: the finished email in real inboxes
 
@@ -106,9 +107,9 @@ I ran the finished email through Email on Acid. Everything looked right except t
 | App | What it showed | Cause | Change |
 | --- | --- | --- | --- |
 | T-Online webmail (Chrome, Edge, Firefox on Windows 10) | The number circles 1, 2 and 3 were missing | T-Online deletes everything between `<!--[if !mso]><!-->` and `<!--<![endif]-->`, the wrapper that hides the HTML version of something from classic Outlook. The circle images sit in that wrapper. So do the HTML versions of both buttons, so those were probably missing too | Every wrapper now has a space inside: `<!--[if !mso]><! -->` and `<!-- <![endif]-->`. T-Online leaves that spelling alone (Rémi Parmentier's email-bugs, issue 43). In Chrome and in Word's engine the email renders exactly as before. `tools/preflight.py` now fails on the old spelling. **Confirmed fixed** in a second Email on Acid run |
-| Gmail app, Pixel 6 to 10 (Android 12 to 16), dark mode | The footer was an empty white box: logo, text and links all gone. Everything else was fine, and light mode was correct (top-level `screenshots/39`, `40`) | Most likely a bug in Email on Acid's Pixel setup. A real Gmail darkening recolors a footer, it doesn't erase it. It was still there in a second Email on Acid run, but on a real Pixel 8 Pro with Android 17, on my own Android phone and on two other Android devices, the footer is correct. One possible reason is an older Gmail on the test phones that ignores "light only". Chrome's built-in automatic darkening, which Gmail on Android is reported to rely on, keeps the footer navy and readable, so I couldn't reproduce it | None, on purpose. Changing a footer that works on real phones to suit one test setup would risk breaking it. Raised as a question for trivago (which devices and versions to support) |
+| Gmail app, Pixel 6 to 10 (Android 12 to 16), dark mode | The footer was an empty white box: logo, text and links all gone. Everything else was fine, and light mode was correct (top-level `screenshots/39`, `40`) | At first I took it for a bug in Email on Acid's Pixel setup. Round 8 found the cause: the Gmail on these test phones (probably an older version) ignores "light only" and inverts the whole email, so the navy footer turns white and the white logo and text vanish into it. It was still there in a second Email on Acid run, but on a real Pixel 8 Pro with Android 17, on my own Android phone and on two other Android devices, the footer is correct | None at first, on purpose: changing a footer that works on real phones to suit one test setup risked breaking it. **Fixed in round 8** with a change that is safe on real phones too |
 
-The real devices were a Pixel 8 Pro with Android 17, my own Android phone and two other Android devices. Their Gmail app versions aren't recorded here. The Android version isn't really what varies here. The Gmail app updates itself through the Play Store, separately from Android, so the Gmail version on the test phone matters more than the Android number.
+The real devices were a Pixel 8 Pro with Android 17, my own Android phone and two other Android devices. Their Gmail app versions aren't recorded here. The Android version matters less: the Gmail app updates itself through the Play Store, separately from Android, so the Gmail version on the test phone matters more than the Android number.
 
 ## Round 7: the Gmail app with an Outlook account
 
@@ -123,6 +124,20 @@ Test sheet: `tests/footer-variants.html`, sent to that setup.
 | C. legal text `#a3abb8` instead of white | ✓ readable | ✓ readable | Works, but changes the design's white |
 
 Not applied. I left the email as designed and flagged it as an open question. A second sheet with lighter grays (`tests/footer-shades.html`) is prepared but hasn't been sent.
+
+## Round 8: Email on Acid's Pixel phones, fixed
+
+Round 6 left the empty white footer on Email on Acid's Gmail Pixel phones alone, because real Android phones showed it correctly. But a reviewer who opens Email on Acid first would see a broken footer. A second look at `screenshots/40`: that Gmail ignores "light only" and inverts the whole email, so the navy footer turns white, and the white logo and the white text (forced white by the blend layers) disappear into it. In the same screenshot "View your campaign" stayed blue, and it is the only element with a CSS gradient background.
+
+Test sheet: `tests/footer-android.html`, the whole email with three footers, sent through Email on Acid.
+
+| Footer | Email on Acid, Gmail Pixel phones, dark | Elsewhere in Email on Acid | Verdict |
+| --- | --- | --- | --- |
+| A. current: navy background image on the cell | ✗ empty white box | ✓ | The bug |
+| B. gradient on the outer cell, navy image on the inner cell (the header's layering) | not recorded | ✗ didn't work in a lot of apps | Rejected |
+| C. gradient only, no image | ✓ navy, logo and text visible | ✓, except Microsoft 365 in the browser (Outlook on the web): slate gray instead of navy, readable (`screenshots/41`) | **Winner** |
+
+Applied: the footer cell's navy background image is replaced by `background-image: linear-gradient(#0a1121,#0a1121)`. Same number of lines, and in Chrome light mode the footer is pixel-identical. Classic Outlook keeps its VML panel. Checked in Email on Acid, then on my own devices: everything looks as before, except that new Outlook now shows the footer slate gray in dark mode, as expected.
 
 ## Lessons for next time
 
@@ -141,3 +156,4 @@ Not applied. I left the email as designed and flagged it as an open question. A 
 13. **Brand assets are not yours to change.** A fix that alters a logo is not a fix. Hold the colors around the logo instead, or accept a recolored background.
 14. **Check layouts at real reading-pane widths, not only at 700 and 375.** New Outlook's pane was about 650px, exactly where the inline-block banner stacked.
 15. **A testing service covers apps you don't own.** T-Online, a large German webmail, deletes content that every other app shows. I would never have found it on my own devices.
+16. **A tool's "bug" can be a real, older app.** Email on Acid's Pixel phones run a Gmail that ignores "light only". Real devices decide what readers see, but when a fix is safe for them too, fixing for the older version is worth it, because reviewers and some readers will see it.

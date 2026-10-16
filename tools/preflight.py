@@ -19,6 +19,8 @@ VOID = {"meta", "img", "br", "hr", "link", "input"}
 # The "hide from Outlook" wrapper, written with a space inside. T-Online deletes the content of the classic
 # spelling (<!--[if !mso]><!--> ... <!--<![endif]-->); with the space it is left alone (email-bugs issue 43).
 NOT_MSO = r"<!--\[if !mso\]><! ?-->|<!-- ?<!\[endif\]-->"
+# Any block only Outlook reads: [if mso], [if gte mso 16], [if lte mso 15], [if (gte mso 9)|(IE)] ... but not [if !mso].
+MSO_OPEN = r"<!--\[if (?![^\]]*!mso)[^\]]*\bmso\b[^\]]*\]>"
 # Tags whose nesting we verify. <p> inside <td> etc. is covered; inline tags are included because
 # an unclosed <a> or <span> silently restyles everything after it in some clients.
 TRACKED = {"html", "head", "body", "table", "tr", "td", "th", "p", "h1", "h2", "h3", "a", "span", "div", "strong", "em", "style", "title"}
@@ -90,9 +92,16 @@ def strip_ampscript(text):
 
 
 def check(path):
-    raw = open(path, "rb").read()
-    text = raw.decode("utf-8")
     fails, warns = [], []
+    try:
+        raw = open(path, "rb").read()
+        text = raw.decode("utf-8")
+    except (OSError, UnicodeDecodeError) as error:
+        print(f"\n{path}\n  FAIL  cannot read it as a UTF-8 file: {error}")
+        return False
+    if text.startswith("\ufeff"):
+        warns.append("starts with a UTF-8 byte-order mark: harmless in email, but some editors show it as stray characters")
+        text = text[1:]
 
     # --- size and encoding -------------------------------------------------------------------
     if len(raw) > GMAIL_CLIP_BYTES:
@@ -100,12 +109,13 @@ def check(path):
     non_ascii = sorted({c for c in text if ord(c) > 127})
     if non_ascii:
         fails.append(f"non-ASCII characters {non_ascii}: write them as HTML entities so a wrong charset cannot corrupt them")
-    head = raw[:1024].lower()
-    if b"<!doctype html>" in head and b"charset" not in head:
-        fails.append("no charset declaration in the first 1024 bytes")
+    # Browsers only look for the charset in the first 1024 bytes. A leading AMPscript block is gone by send time.
+    head = re.sub(r"^\s*%%\[.*?\]%%", "", text, flags=re.S)[:1024].lower()
+    if not re.search(r"<meta[^>]+charset", head):
+        fails.append("no charset declaration in the first 1024 bytes of the HTML")
 
     # --- conditional comments ----------------------------------------------------------------
-    for m in re.finditer(r"<!--\[if mso[^\]]*\]>(.*?)<!\[endif\]-->", text, flags=re.S):
+    for m in re.finditer(MSO_OPEN + r"(.*?)<!\[endif\]-->", text, flags=re.S):
         if "<!--" in m.group(1) or "-->" in m.group(1):
             line = text.count("\n", 0, m.start()) + 1
             fails.append(f"line {line}: HTML comment inside an [if mso] block ends the block early for every other client")
@@ -113,7 +123,7 @@ def check(path):
         fails.append("[if !mso] openers and closers do not match")
     if "<!--[if !mso]><!-->" in text or "<!--<![endif]-->" in text:
         fails.append("[if !mso] written without the inner space: T-Online deletes everything inside it")
-    opens = len(re.findall(r"<!--\[if (?:gte )?mso[^\]]*\]>", text))
+    opens = len(re.findall(MSO_OPEN, text))
     closes = len(re.findall(r"(?<!<!--)(?<!<!-- )<!\[endif\]-->", text))
     if opens != closes:
         fails.append(f"[if mso] blocks unbalanced: {opens} opened, {closes} closed")
@@ -150,7 +160,7 @@ def check(path):
             fails.append(f"a <table> without role=\"presentation\": screen readers will announce it as a data table")
     for line, a in p.links:
         href = a.get("href", "")
-        if href in ("", "#") or href.startswith("javascript"):
+        if href in ("", "#") or href.lower().startswith("javascript"):
             fails.append(f"link with empty or dead href: {href!r}")
     if not re.search(r"<html[^>]*\slang=", text):
         fails.append("no lang attribute on <html>")
@@ -168,6 +178,7 @@ def check(path):
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")   # non-ASCII in a FAIL line, output piped
     # With no arguments, check the two emails next to this tools folder, wherever the script is run from.
     project = __file__.replace("\\", "/").rsplit("/tools/", 1)[0]
     files = sys.argv[1:] or [f"{project}/email.html", f"{project}/email-ampscript.html"]

@@ -6,10 +6,10 @@
   Dark-mode test sheet. Not part of the email: it puts several fixes for the same problem side by side,
   so one test send shows which fix works in which app. Send it with tools/send_test.py, open it in each
   app in dark mode AND light mode, and screenshot every section.
-  Problems it tests, all seen in real inboxes on 14 October:
-  1. Classic Outlook, dark: VML button and circle text is recoloured but the VML fill is not.
+  Problems it tests, all seen in real inboxes:
+  1. Classic Outlook, dark: VML button and circle text is recolored but the VML fill is not.
   2. Classic and new Outlook, dark: the header logo shows as a white box.
-  3. Gmail app, classic Outlook, new Outlook, dark: the navy footer is recoloured; with a plain white logo
+  3. Gmail app, classic Outlook, new Outlook, dark: the navy footer is recolored; with a plain white logo
      the logo can disappear. 3A is today's outline fix, 3B and 3C keep the footer navy instead.
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,8 +30,8 @@
 <![endif]-->
 <!--[if gte mso 16]>
 <style>
-  /* Gradient text trick (Nicole Merlin): light mode shows the gradient colour; dark mode drops the gradient
-     and inverts the fallback colour, so a black fallback comes out white and a white one comes out black. */
+  /* Gradient text trick (Nicole Merlin): light mode shows the gradient color; dark mode drops the gradient
+     and inverts the fallback color, so a black fallback comes out white and a white one comes out black. */
   .mso-keep-white { mso-style-textfill-type:gradient; mso-style-textfill-fill-gradientfill-stoplist:"0 \#FFFFFF 0 100000\,100000 \#FFFFFF 0 100000"; color:#000000 !important; }
   .mso-keep-black { mso-style-textfill-type:gradient; mso-style-textfill-fill-gradientfill-stoplist:"0 \#000000 0 100000\,100000 \#000000 0 100000"; color:#FFFFFF !important; }
 </style>
@@ -59,7 +59,7 @@
   <tr><td style="padding:16px 10px 6px 10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; line-height:20px; font-weight:bold; color:#000000;">1. Buttons and circles (for classic Outlook)</td></tr>
 
   <!-- 1A: today's VML -->
-  <tr><td style="padding:10px 10px 4px 10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:18px; font-weight:bold; color:#000000;">1A &nbsp;today: VML shape, plain text colour</td></tr>
+  <tr><td style="padding:10px 10px 4px 10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:18px; font-weight:bold; color:#000000;">1A &nbsp;today: VML shape, plain text color</td></tr>
   <tr><td>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
       <td width="440" bgcolor="#fafafa" style="width:440px; background-color:#fafafa; padding:16px 20px;">
@@ -145,7 +145,7 @@
     </tr></table>
   </td></tr>
 
-  <!-- 1D: no VML. Plain table cells, which Outlook recolours together with their text (square corners in classic Outlook) -->
+  <!-- 1D: no VML. Plain table cells, which Outlook recolors together with their text (square corners in classic Outlook) -->
   <tr><td style="padding:10px 10px 4px 10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:18px; font-weight:bold; color:#000000;">1D &nbsp;no VML: plain table cells (square in classic Outlook)</td></tr>
   <tr><td>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
@@ -174,7 +174,7 @@
     <img src="https://raw.githubusercontent.com/PewPewzxc/case-study-trivago/main/images/logo-rate-connect.png" width="260" height="41" alt="trivago Rate Connect" style="display:block; width:260px; max-width:100%; height:auto; margin:0 auto;">
   </td></tr>
 
-  <!-- 2B: classic Outlook gets a white VML rectangle behind the logo (VML fills are not recoloured);
+  <!-- 2B: classic Outlook gets a white VML rectangle behind the logo (VML fills are not recolored);
        new Outlook gets wider data-ogsb/data-ogab rules -->
   <tr><td style="padding:10px 10px 4px 10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:18px; font-weight:bold; color:#000000;">2B &nbsp;VML white rectangle (classic Outlook), wider rules (new Outlook)</td></tr>
   <tr><td class="keep-white-b" align="center" bgcolor="#ffffff" style="background-color:#ffffff; background-image:linear-gradient(#ffffff,#ffffff);">
@@ -189,8 +189,8 @@
     <![endif]-->
   </td></tr>
 
-  <!-- 2C: no background colour at all, only a tiny white background image (dark modes do not recolour images) -->
-  <tr><td style="padding:10px 10px 4px 10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:18px; font-weight:bold; color:#000000;">2C &nbsp;white background image, no background colour</td></tr>
+  <!-- 2C: no background color at all, only a tiny white background image (dark modes do not recolor images) -->
+  <tr><td style="padding:10px 10px 4px 10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:13px; line-height:18px; font-weight:bold; color:#000000;">2C &nbsp;white background image, no background color</td></tr>
   <tr><td align="center" background="https://raw.githubusercontent.com/PewPewzxc/case-study-trivago/main/tests/images/bg-white.png" style="background-image:url('https://raw.githubusercontent.com/PewPewzxc/case-study-trivago/main/tests/images/bg-white.png'); background-repeat:repeat; padding:15px 10px;">
     <img src="https://raw.githubusercontent.com/PewPewzxc/case-study-trivago/main/images/logo-rate-connect.png" width="260" height="41" alt="trivago Rate Connect" style="display:block; width:260px; max-width:100%; height:auto; margin:0 auto;">
   </td></tr>

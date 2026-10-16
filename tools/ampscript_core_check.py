@@ -7,19 +7,22 @@ spots. AMPscript Core is an independent, open-source AMPscript engine from Sales
 extension listed in Salesforce's AMPscript docs). It is not Marketing Cloud either, and it is partial.
 
 Needs: the .vsix from https://github.com/SalesforceLabs/ampscript-core/releases (0.0.6 tested) and the
-.NET 8 and ASP.NET Core 8 runtimes. Writes each rendered email to tests/ampscript/core/.
+.NET 8 and ASP.NET Core 8 runtimes. Writes each rendered email to tests/ampscript/core/. The engine is unpacked
+once into your temp folder (about 50 MB, a folder named after the .vsix) and reused on later runs.
 
 The engine runs a test copy with two changes, each for a gap in the engine, not in the email:
   1. LookupOrderedRows() becomes LookupRows(); the engine has no LookupOrderedRows(). The CSV rows are
      written in A to Z order, so the result is the same rows in the same order.
   2. IF @moreCount > 0 becomes IF @propertyCount > @listedCount (the same condition). The engine crashes
      when it compares a Subtract() result with a number ("Unable to cast Double to Decimal").
-Every subscriber also gets all four sendable columns, empty where the case has no value, because a data
+The order of the property lists is not an independent check: the CSV rows are pre-sorted with the runner's own
+A to Z rule, because the engine has no ordered lookup. Every subscriber also gets all four sendable columns, empty where the case has no value, because a data
 extension row always has every column (the engine prints a missing one as raw text).
 """
 import csv
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -75,6 +78,11 @@ def render(engine, folder):
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
+    if not Path(sys.argv[1]).is_file():
+        sys.exit(f"No such file: {sys.argv[1]}")
+    if not shutil.which("dotnet"):
+        sys.exit("The .NET runtime (dotnet) is not installed. It needs .NET 8 and ASP.NET Core 8.")
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
     engine = engine_folder(sys.argv[1])
     source = (PROJECT / "email-ampscript.html").read_text(encoding="utf-8")
     test_copy = source

@@ -2,30 +2,176 @@
   "template": "email-ampscript.html",
   "data_extensions": {
     "RateConnect_Properties": [
-      {"hotelier_id": "H1", "property_name": "Hotel Rheinblick", "commission_rate": "12"},
-
-      {"hotelier_id": "H2", "property_name": "Pension Lindenhof", "commission_rate": "10.5"},
-      {"hotelier_id": "H2", "property_name": "Villa Rosengarten", "commission_rate": "11"},
-      {"hotelier_id": "H2", "property_name": "Altstadt Suites", "commission_rate": "14"},
-      {"hotelier_id": "H2", "property_name": "Parkhotel Benrath", "commission_rate": "15"},
-      {"hotelier_id": "H2", "property_name": "Hotel Am Hafen", "commission_rate": "12"},
-      {"hotelier_id": "H2", "property_name": "Seehotel Kaiserswerth", "commission_rate": "13"},
-      {"hotelier_id": "H2", "property_name": "Hotel Rheinblick", "commission_rate": "12"},
-
-      {"hotelier_id": "H3", "property_name": "Haus A", "commission_rate": "10"},
-      {"hotelier_id": "H3", "property_name": "Haus B", "commission_rate": "10"},
-      {"hotelier_id": "H3", "property_name": "Haus C", "commission_rate": "10"},
-      {"hotelier_id": "H3", "property_name": "Haus D", "commission_rate": "10"},
-      {"hotelier_id": "H3", "property_name": "Haus E", "commission_rate": "10"},
-
-      {"hotelier_id": "H4", "property_name": "Hotel Nord", "commission_rate": ""},
-      {"hotelier_id": "H4", "property_name": "Hotel Süd", "commission_rate": "9"},
-
-      {"hotelier_id": "H5", "property_name": "Gasthof Zum Löwen", "commission_rate": "0"},
-
-      {"hotelier_id": "H6", "property_name": "Zur Post", "commission_rate": "12"},
-      {"hotelier_id": "H6", "property_name": "Ärztehaus am See", "commission_rate": "10"},
-      {"hotelier_id": "H6", "property_name": "Bergblick", "commission_rate": "11"}
+      {
+        "hotelier_id": "H1",
+        "property_name": "Hotel Rheinblick",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H2",
+        "property_name": "Pension Lindenhof",
+        "commission_rate": "10.5"
+      },
+      {
+        "hotelier_id": "H2",
+        "property_name": "Villa Rosengarten",
+        "commission_rate": "11"
+      },
+      {
+        "hotelier_id": "H2",
+        "property_name": "Altstadt Suites",
+        "commission_rate": "14"
+      },
+      {
+        "hotelier_id": "H2",
+        "property_name": "Parkhotel Benrath",
+        "commission_rate": "15"
+      },
+      {
+        "hotelier_id": "H2",
+        "property_name": "Hotel Am Hafen",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H2",
+        "property_name": "Seehotel Kaiserswerth",
+        "commission_rate": "13"
+      },
+      {
+        "hotelier_id": "H2",
+        "property_name": "Hotel Rheinblick",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H3",
+        "property_name": "Haus A",
+        "commission_rate": "10"
+      },
+      {
+        "hotelier_id": "H3",
+        "property_name": "Haus B",
+        "commission_rate": "10"
+      },
+      {
+        "hotelier_id": "H3",
+        "property_name": "Haus C",
+        "commission_rate": "10"
+      },
+      {
+        "hotelier_id": "H3",
+        "property_name": "Haus D",
+        "commission_rate": "10"
+      },
+      {
+        "hotelier_id": "H3",
+        "property_name": "Haus E",
+        "commission_rate": "10"
+      },
+      {
+        "hotelier_id": "H4",
+        "property_name": "Hotel Nord",
+        "commission_rate": ""
+      },
+      {
+        "hotelier_id": "H4",
+        "property_name": "Hotel Süd",
+        "commission_rate": "9"
+      },
+      {
+        "hotelier_id": "H5",
+        "property_name": "Gasthof Zum Löwen",
+        "commission_rate": "0"
+      },
+      {
+        "hotelier_id": "H6",
+        "property_name": "Zur Post",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H6",
+        "property_name": "Ärztehaus am See",
+        "commission_rate": "10"
+      },
+      {
+        "hotelier_id": "H6",
+        "property_name": "Bergblick",
+        "commission_rate": "11"
+      },
+      {
+        "hotelier_id": "H7",
+        "property_name": "  Hotel Seeblick  ",
+        "commission_rate": " 9 "
+      },
+      {
+        "hotelier_id": "H7",
+        "property_name": "Pension Waldrand",
+        "commission_rate": "   "
+      },
+      {
+        "hotelier_id": "H8",
+        "property_name": "   ",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H10",
+        "property_name": "Hotel Anker",
+        "commission_rate": "10"
+      },
+      {
+        "hotelier_id": "H10",
+        "property_name": "Hotel Brise",
+        "commission_rate": "11"
+      },
+      {
+        "hotelier_id": "H10",
+        "property_name": "Hotel Dorf",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H10",
+        "property_name": "Hotel Eiche",
+        "commission_rate": "13"
+      },
+      {
+        "hotelier_id": "H10",
+        "property_name": "Hotel Fluss",
+        "commission_rate": "14"
+      },
+      {
+        "hotelier_id": "H10",
+        "property_name": "Hotel Garten",
+        "commission_rate": "15"
+      },
+      {
+        "hotelier_id": "H11",
+        "property_name": "B&B <Rhein> & Co",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H12",
+        "property_name": "Hotel Prozent",
+        "commission_rate": "12%"
+      },
+      {
+        "hotelier_id": "H13",
+        "property_name": "Alpha Haus",
+        "commission_rate": "11 %"
+      },
+      {
+        "hotelier_id": "H13",
+        "property_name": "Beta Haus",
+        "commission_rate": " % "
+      },
+      {
+        "hotelier_id": "H14",
+        "property_name": "   ",
+        "commission_rate": "12"
+      },
+      {
+        "hotelier_id": "H14",
+        "property_name": "Zeta Hotel",
+        "commission_rate": "9"
+      }
     ]
   },
   "cases": [
@@ -33,77 +179,387 @@
       "name": "single",
       "about": "one property: the email as designed",
       "preview": "single-property.html",
-      "subscriber": {"hotelier_id": "H1", "hotelier_name": "Maria"},
-      "expect": ["Hello Maria,", "Now that Hotel Rheinblick is live on trivago", "Current rate: 12%", "Got more than one property?"],
-      "forbid": ["Current rates:", "properties are live"]
+      "subscriber": {
+        "hotelier_id": "H1",
+        "hotelier_name": "Maria"
+      },
+      "expect": [
+        "Hello Maria,",
+        "Now that Hotel Rheinblick is live on trivago",
+        "Current rate: 12%",
+        "Got more than one property?"
+      ],
+      "forbid": [
+        "Current rates:",
+        "properties are live"
+      ]
     },
     {
       "name": "multi_seven",
       "about": "seven properties: count, five rates in A to Z order, '+ 2 more', no banner",
       "preview": "multi-property.html",
-      "subscriber": {"hotelier_id": "H2", "hotelier_name": "Maria"},
-      "expect": ["Hello Maria,", "Now that your 7 properties are live on trivago", "Current rates:", "+ 2 more in Business Studio"],
-      "expect_in_order": ["Altstadt Suites: 14%", "Hotel Am Hafen: 12%", "Hotel Rheinblick: 12%", "Parkhotel Benrath: 15%", "Pension Lindenhof: 10.5%"],
-      "forbid": ["Seehotel Kaiserswerth", "Villa Rosengarten", "Got more than one property?"]
+      "subscriber": {
+        "hotelier_id": "H2",
+        "hotelier_name": "Maria"
+      },
+      "expect": [
+        "Hello Maria,",
+        "Now that your 7 properties are live on trivago",
+        "Current rates:",
+        "+ 2 more in Business Studio"
+      ],
+      "expect_in_order": [
+        "Altstadt Suites: 14%",
+        "Hotel Am Hafen: 12%",
+        "Hotel Rheinblick: 12%",
+        "Parkhotel Benrath: 15%",
+        "Pension Lindenhof: 10.5%"
+      ],
+      "forbid": [
+        "Seehotel Kaiserswerth",
+        "Villa Rosengarten",
+        "Got more than one property?"
+      ]
     },
     {
       "name": "multi_exactly_five",
       "about": "five properties: all listed, no '+ more' line",
-      "subscriber": {"hotelier_id": "H3", "hotelier_name": "Jonas"},
-      "expect": ["Now that your 5 properties are live", "Haus E: 10%"],
-      "forbid": ["more in Business Studio", "Got more than one property?"]
+      "subscriber": {
+        "hotelier_id": "H3",
+        "hotelier_name": "Jonas"
+      },
+      "expect": [
+        "Now that your 5 properties are live",
+        "Haus E: 10%"
+      ],
+      "forbid": [
+        "more in Business Studio",
+        "Got more than one property?"
+      ],
+      "expect_in_order": [
+        "Haus A",
+        "Haus B",
+        "Haus C",
+        "Haus D",
+        "Haus E"
+      ]
     },
     {
       "name": "multi_rate_missing",
       "about": "two properties, one without a rate: that line shows the name only",
-      "subscriber": {"hotelier_id": "H4", "hotelier_name": "Lena"},
-      "expect": ["Now that your 2 properties are live", "Hotel Nord Hotel Süd: 9%"],
-      "forbid": ["Hotel Nord:", "Hotel Nord: %"]
+      "subscriber": {
+        "hotelier_id": "H4",
+        "hotelier_name": "Lena"
+      },
+      "expect": [
+        "Now that your 2 properties are live",
+        "Hotel Nord Hotel Süd: 9%"
+      ],
+      "forbid": [
+        "Hotel Nord:",
+        "Hotel Nord: %"
+      ]
     },
     {
       "name": "no_name_no_data",
       "about": "no name and no property anywhere: neutral wording, no gaps",
-      "subscriber": {"hotelier_id": "H404", "hotelier_name": ""},
-      "expect": ["Hello,", "Now that your property is live on trivago", "Got more than one property?"],
-      "forbid": ["Hello ,", "Current rate", "Now that  is live"]
+      "subscriber": {
+        "hotelier_id": "H404",
+        "hotelier_name": ""
+      },
+      "expect": [
+        "Hello,",
+        "Now that your property is live on trivago",
+        "Got more than one property?"
+      ],
+      "forbid": [
+        "Hello ,",
+        "Current rate",
+        "Now that is live"
+      ]
     },
     {
       "name": "fallback_columns",
       "about": "nothing in the lookup: name and rate come from the sendable data extension",
-      "subscriber": {"hotelier_id": "H405", "hotelier_name": "Ali", "property_name": "Gasthaus Krone", "commission_rate": "11"},
-      "expect": ["Hello Ali,", "Now that Gasthaus Krone is live", "Current rate: 11%", "Got more than one property?"]
+      "subscriber": {
+        "hotelier_id": "H405",
+        "hotelier_name": "Ali",
+        "property_name": "Gasthaus Krone",
+        "commission_rate": "11"
+      },
+      "expect": [
+        "Hello Ali,",
+        "Now that Gasthaus Krone is live",
+        "Current rate: 11%",
+        "Got more than one property?"
+      ]
     },
     {
       "name": "name_with_spaces",
       "about": "a name with stray spaces is trimmed",
-      "subscriber": {"hotelier_id": "H1", "hotelier_name": "  Maria  "},
-      "expect": ["Hello Maria,"]
+      "subscriber": {
+        "hotelier_id": "H1",
+        "hotelier_name": "  Maria  "
+      },
+      "expect": [
+        "Hello Maria,"
+      ]
     },
     {
       "name": "no_id_column",
-      "about": "the data extension has no hotelier_id column at all: no lookup, neutral wording",
-      "subscriber": {"hotelier_name": "Maria"},
-      "expect": ["Hello Maria,", "Now that your property is live"],
-      "forbid": ["Current rate"]
+      "about": "no hotelier ID (the runner: no column at all; in a data extension the column is there but empty): no lookup, neutral wording",
+      "subscriber": {
+        "hotelier_name": "Maria"
+      },
+      "expect": [
+        "Hello Maria,",
+        "Now that your property is live"
+      ],
+      "forbid": [
+        "Current rate"
+      ]
     },
     {
       "name": "rate_zero",
       "about": "a rate of 0 is a real value and is shown; umlauts pass through",
-      "subscriber": {"hotelier_id": "H5", "hotelier_name": "Jürgen"},
-      "expect": ["Hello Jürgen,", "Now that Gasthof Zum Löwen is live", "Current rate: 0%"]
+      "subscriber": {
+        "hotelier_id": "H5",
+        "hotelier_name": "Jürgen"
+      },
+      "expect": [
+        "Hello Jürgen,",
+        "Now that Gasthof Zum Löwen is live",
+        "Current rate: 0%"
+      ]
     },
     {
       "name": "umlaut_sort",
       "about": "A-umlaut sorts next to A, as in Marketing Cloud, not after Z",
-      "subscriber": {"hotelier_id": "H6", "hotelier_name": "Kerstin"},
-      "expect_in_order": ["Ärztehaus am See: 10%", "Bergblick: 11%", "Zur Post: 12%"]
+      "subscriber": {
+        "hotelier_id": "H6",
+        "hotelier_name": "Kerstin"
+      },
+      "expect_in_order": [
+        "Ärztehaus am See: 10%",
+        "Bergblick: 11%",
+        "Zur Post: 12%"
+      ]
     },
     {
       "name": "wrong_lookup_name",
       "about": "the lookup table name in CONFIG does not exist: the runner stops with an error (assumed to match Marketing Cloud, not verified there)",
-      "subscriber": {"hotelier_id": "H1", "hotelier_name": "Maria"},
+      "subscriber": {
+        "hotelier_id": "H1",
+        "hotelier_name": "Maria"
+      },
       "data_extensions": {},
       "expect_error": "does not exist"
+    },
+    {
+      "name": "name_only_spaces",
+      "about": "a name of only spaces counts as no name",
+      "subscriber": {
+        "hotelier_id": "H1",
+        "hotelier_name": "   "
+      },
+      "expect": [
+        "Hello,",
+        "Now that Hotel Rheinblick is live on trivago"
+      ],
+      "forbid": [
+        "Hello ,"
+      ]
+    },
+    {
+      "name": "id_with_spaces",
+      "about": "stray spaces around the hotelier ID still find the properties",
+      "subscriber": {
+        "hotelier_id": "  H1 ",
+        "hotelier_name": "Maria"
+      },
+      "expect": [
+        "Now that Hotel Rheinblick is live on trivago",
+        "Current rate: 12%"
+      ],
+      "forbid": [
+        "Now that your property is live"
+      ]
+    },
+    {
+      "name": "fallback_only_spaces",
+      "about": "fallback property name and rate of only spaces count as missing",
+      "subscriber": {
+        "hotelier_id": "H404",
+        "hotelier_name": "Ali",
+        "property_name": "   ",
+        "commission_rate": "  "
+      },
+      "expect": [
+        "Now that your property is live on trivago"
+      ],
+      "forbid": [
+        "Current rate",
+        "Now that is live"
+      ]
+    },
+    {
+      "name": "spaces_in_property_rows",
+      "about": "spaces around a property's name and rate are trimmed; a rate of only spaces counts as missing",
+      "subscriber": {
+        "hotelier_id": "H7",
+        "hotelier_name": "Jonas"
+      },
+      "expect": [
+        "Now that your 2 properties are live",
+        "Hotel Seeblick: 9%",
+        "Pension Waldrand"
+      ],
+      "forbid": [
+        "Pension Waldrand:",
+        "Seeblick :",
+        " 9 %"
+      ]
+    },
+    {
+      "name": "blank_property_name",
+      "about": "one property whose name is only spaces: the neutral sentence, not an empty name",
+      "subscriber": {
+        "hotelier_id": "H8",
+        "hotelier_name": "Lena"
+      },
+      "expect": [
+        "Now that your property is live on trivago",
+        "Current rate: 12%"
+      ],
+      "forbid": [
+        "Now that is live"
+      ]
+    },
+    {
+      "name": "multi_exactly_six",
+      "about": "six properties: five listed, then '+ 1 more' (the boundary of the cap)",
+      "subscriber": {
+        "hotelier_id": "H10",
+        "hotelier_name": "Jonas"
+      },
+      "expect": [
+        "Now that your 6 properties are live",
+        "+ 1 more in Business Studio"
+      ],
+      "expect_in_order": [
+        "Hotel Anker: 10%",
+        "Hotel Brise: 11%",
+        "Hotel Dorf: 12%",
+        "Hotel Eiche: 13%",
+        "Hotel Fluss: 14%",
+        "+ 1 more"
+      ],
+      "forbid": [
+        "Hotel Garten"
+      ]
+    },
+    {
+      "name": "id_other_case",
+      "about": "the hotelier ID in lower case still finds the properties (the lookup ignores case)",
+      "subscriber": {
+        "hotelier_id": "h1",
+        "hotelier_name": "Maria"
+      },
+      "expect": [
+        "Now that Hotel Rheinblick is live on trivago",
+        "Current rate: 12%"
+      ]
+    },
+    {
+      "name": "lookup_beats_fallback",
+      "about": "when the lookup finds properties, the fallback columns on the hotelier's row are ignored",
+      "subscriber": {
+        "hotelier_id": "H1",
+        "hotelier_name": "Maria",
+        "property_name": "Old Name",
+        "commission_rate": "99"
+      },
+      "expect": [
+        "Now that Hotel Rheinblick is live on trivago",
+        "Current rate: 12%"
+      ],
+      "forbid": [
+        "Old Name",
+        "99%"
+      ]
+    },
+    {
+      "name": "special_characters",
+      "about": "& < > in names are escaped, so they print exactly as stored (an unescaped & or < would change or swallow text)",
+      "subscriber": {
+        "hotelier_id": "H11",
+        "hotelier_name": "Tom &amp Jerry <GmbH>"
+      },
+      "expect": [
+        "Hello Tom &amp Jerry <GmbH>,",
+        "Now that B&B <Rhein> & Co is live on trivago"
+      ]
+    },
+    {
+      "name": "rate_with_percent",
+      "about": "a rate stored with its own % prints one % sign",
+      "subscriber": {
+        "hotelier_id": "H12",
+        "hotelier_name": "Lena"
+      },
+      "expect": [
+        "Current rate: 12%"
+      ],
+      "forbid": [
+        "12%%"
+      ]
+    },
+    {
+      "name": "rates_with_percent_in_rows",
+      "about": "in the property list, a stored % is dropped too, and a rate of only a % counts as missing",
+      "subscriber": {
+        "hotelier_id": "H13",
+        "hotelier_name": "Lena"
+      },
+      "expect": [
+        "Alpha Haus: 11%",
+        "Beta Haus"
+      ],
+      "forbid": [
+        "%%",
+        "11 %",
+        "Beta Haus:"
+      ]
+    },
+    {
+      "name": "multi_blank_name",
+      "about": "a property without a name in a list shows as 'Unnamed property', so the count still adds up",
+      "subscriber": {
+        "hotelier_id": "H14",
+        "hotelier_name": "Lena"
+      },
+      "expect": [
+        "Now that your 2 properties are live",
+        "Unnamed property: 12%",
+        "Zeta Hotel: 9%"
+      ],
+      "forbid": [
+        "Current rates: :"
+      ]
+    },
+    {
+      "name": "fallback_rate_without_name",
+      "about": "a fallback rate without a property name: neutral wording, the rate still shows",
+      "subscriber": {
+        "hotelier_id": "H404",
+        "hotelier_name": "Ali",
+        "property_name": "",
+        "commission_rate": "11"
+      },
+      "expect": [
+        "Now that your property is live on trivago",
+        "Current rate: 11%"
+      ]
     }
   ]
 }

@@ -2,21 +2,21 @@
 /* ==========================================================================================
    trivago Rate Connect onboarding email: personalization logic (AMPscript)
 
-   Every decision is made in this block. The HTML below only prints variables with v() and switches
-   whole sentences on or off with IF, so no sentence is ever assembled from pieces (a translator
-   gets each one complete).
+   Almost every decision is made in this block; the one exception is the property loop in tip 2. The
+   HTML below prints variables with v() and switches whole sentences on or off with IF, so no sentence
+   is ever assembled from pieces (a translator gets each one complete).
 
    WHAT EACH HOTELIER GETS  (same table in README.md, "Data the AMPscript expects")
      1 property     as designed: property name in the intro, "Current rate: 12%", banner shown
      2 or more      "your N properties", one rate line each (5 at most, then "+ N more"), banner hidden
      no data        "your property", no rate line, banner shown
 
-   DATA  (my assumed names; trivago's real ones go here, in CONFIG and in sections 1 and 2)
+   DATA  (my assumed names; trivago's real ones go in CONFIG, sections 1 and 2, and the property loop in tip 2)
    Sendable data extension, one row per hotelier:
         hotelier_id       Text   key for the property lookup
         hotelier_name     Text   empty gives "Hello,"
         property_name     Text   fallback when the lookup finds nothing
-        commission_rate   Text   fallback; printed as stored, plus "%" (12 or 10.5)
+        commission_rate   Text   fallback; printed as stored plus "%" (12 or 10.5; a stored "%" is dropped)
    Lookup data extension (name in @propertiesDE), one row per property on Rate Connect:
         hotelier_id | property_name | commission_rate      (all Text)
    Why Text for the rate: a Number column only takes whole numbers (10.5 fails the import), and
@@ -53,14 +53,14 @@ SET @urlLinkedIn    = "https://www.linkedin.com/company/trivago/"
    A plain personalization string would fail the send for that subscriber instead. */
 SET @hotelierId   = AttributeValue("hotelier_id")
 SET @hotelierName = AttributeValue("hotelier_name")
-
-/* No name on file: greet without one rather than print "Hello ,". Trim() only runs on a real value. */
+/* Trim first, then check: only spaces counts as empty. Names are printed into HTML, so & < > are escaped. */
+IF NOT Empty(@hotelierId)   THEN SET @hotelierId   = Trim(@hotelierId)   ENDIF
+IF NOT Empty(@hotelierName) THEN SET @hotelierName = Replace(Replace(Replace(Trim(@hotelierName), "&", "&amp;"), "<", "&lt;"), ">", "&gt;") ENDIF
 IF Empty(@hotelierName) THEN
-  SET @greeting = "Hello,"
+  SET @greeting = "Hello,"   /* no name on file: never "Hello ," */
 ELSE
-  SET @greeting = Concat("Hello ", Trim(@hotelierName), ",")
+  SET @greeting = Concat("Hello ", @hotelierName, ",")
 ENDIF
-
 /* ---------- 2. Properties ---------- */
 SET @propertyCount = 0
 
@@ -71,7 +71,7 @@ IF NOT Empty(@hotelierId) THEN
 ENDIF
 
 IF @propertyCount > 0 THEN
-  /* Single-property wording uses the first (for most hoteliers the only) row. */
+  /* Row 1 feeds the single-property wording, which only shows when it is the only row. */
   SET @row            = Row(@properties, 1)
   SET @propertyName   = Field(@row, "property_name")
   SET @commissionRate = Field(@row, "commission_rate")
@@ -79,10 +79,10 @@ ELSE
   /* Nothing in the lookup: fall back to the columns on the sendable data extension. */
   SET @propertyName   = AttributeValue("property_name")
   SET @commissionRate = AttributeValue("commission_rate")
-  IF NOT Empty(@propertyName) THEN
-    SET @propertyCount = 1
-  ENDIF
 ENDIF
+IF NOT Empty(@propertyName)   THEN SET @propertyName   = Replace(Replace(Replace(Trim(@propertyName), "&", "&amp;"), "<", "&lt;"), ">", "&gt;") ENDIF
+IF NOT Empty(@commissionRate) THEN SET @commissionRate = Trim(Replace(@commissionRate, "%", "")) ENDIF
+IF @propertyCount == 0 AND NOT Empty(@propertyName) THEN SET @propertyCount = 1 ENDIF
 
 /* ---------- 3. What to show ---------- */
 /* How many rows of the property list to print in tip 2 (multi-property only). */
@@ -110,8 +110,8 @@ ENDIF
   trivago Rate Connect onboarding email (dynamic build, Salesforce Marketing Cloud only)
   ======================================================================================
   Design : Figma "InternCaseStudy", frames "Desktop" (700px) and "Mobile" (300px).
-  Logic  : all in the block at the top of this file. Search for "AMPSCRIPT" to find each spot in the
-           markup that prints a variable or switches a sentence on or off.
+  Logic  : the block at the top, plus the property loop in tip 2. Search for "AMPSCRIPT" for every spot that
+           prints a variable or switches a sentence; links go through RedirectTo() for click tracking.
   Twin   : email.html is the same markup with the design's placeholders, for tools without AMPscript.
            A markup change goes into both files; nothing checks that they still match.
 
@@ -124,18 +124,18 @@ ENDIF
   - Dark mode: never put something apps recolor (a background color, text) next to something they never
     recolor (an image, a VML shape). Every dark-mode color bug in this email broke that rule.
   - Content images are 4x exports: always set width and height in the HTML, or classic Outlook shows them at 4x.
-  - Before every test send: python tools/preflight.py, then python tools/ampscript_run.py (11 cases).
+  - Before every test send: python tools/preflight.py, then python tools/ampscript_run.py (24 cases).
 
   HOW EACH APP GETS ITS LAYOUT
   - Classic Outlook on Windows renders with Word. It reads the [if mso] blocks: a fixed 700px table
     (it ignores max-width), VML for the rounded button and number circles (it ignores border-radius),
     and VML panels that keep the header white and the footer navy in its dark mode.
-  - Every other app gets a fluid table up to 700px with inline styles. The style block only adds the
-    600px mobile layout and dark-mode fixes. An app that drops it (the Gmail app with a non-Google
+  - Every other app gets a fluid table up to 700px with inline styles. The style block only adds resets,
+    the 600px mobile layout and dark-mode fixes. An app that drops it (the Gmail app with a non-Google
     account does) still gets a fluid version of the desktop layout.
-  - Dark mode: "light only" is respected by Apple Mail and the Gmail app with a Google account. Both
-    Outlooks recolor anyway, so the header and footer colors are held by images and VML. Still open: the
-    footer's legal text in the Gmail app with a non-Google account (tests/RESULTS.md, round 7).
+  - Dark mode: "light only" is respected by Apple Mail and the Gmail app with a Google account. For apps that ignore
+    it, gradients, a tiny image and VML hold the header white and the footer navy (new Outlook shows the footer slate gray).
+    Still open: the footer's legal text in the Gmail app with a non-Google account (tests/RESULTS.md, round 7).
 
   Sections (search for "SECTION"):
   header | hero | intro | tips | primary CTA | multi-property banner | support signature | footer
@@ -190,7 +190,7 @@ ENDIF
   @media screen and (max-width: 600px) {
     .gutter      { padding-left: 20px !important; padding-right: 20px !important; }
     .hero        { padding-top: 32px !important; padding-bottom: 32px !important; }
-    /* The headline is one plain sentence (a translation script can find it); &nbsp; keeps "Rate Connect" together. */
+    /* Headline size from the 300px frame. The headline is one plain sentence; &nbsp; keeps "Rate Connect" together. */
     .hero-title  { font-size: 20px !important; line-height: 24px !important; }
     .tips        { padding-top: 20px !important; padding-bottom: 20px !important; }
 
@@ -228,7 +228,7 @@ ENDIF
       <table role="presentation" width="700" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td>
       <![endif]-->
 
-      <!-- Email container: fluid up to 700px. Outlook gets its width from the table above. -->
+      <!-- Email container: fluid up to 700px. Classic Outlook gets its width from the table above. -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:700px; margin:0 auto;">
 
         <!-- ================= SECTION: header ================= -->
@@ -335,8 +335,8 @@ ENDIF
                       </td>
                       <td class="stack tip-text" valign="top" style="padding:0 0 0 16px; vertical-align:top;">
                         <p style="margin:0 0 4px 0; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size:15px; line-height:22px; font-weight:bold; color:#000000;">Keep an eye on your commission rate:</p>
-                        <!-- AMPSCRIPT: several properties = one line per property; one property = the designed line;
-                             no rate on file = the line is left out, so no empty gap appears.
+                        <!-- AMPSCRIPT: several properties = one line per property (one without a name shows as "Unnamed property",
+                             so it stays counted); one property = the designed line; no rate on file = no rate, no empty gap.
                              The percent sign goes through Concat(): typed after the closing delimiter it makes
                              three percent signs in a row, which is easy to break when editing. preflight.py flags it. -->
                         %%[ IF @propertyCount > 1 THEN ]%%
@@ -344,11 +344,11 @@ ENDIF
                           Current rates:
                           %%[ FOR @i = 1 TO @listedCount DO
                                 SET @row     = Row(@properties, @i)
-                                SET @rowName = Field(@row, "property_name")
-                                SET @rowRate = Field(@row, "commission_rate")
-                                IF Empty(@rowRate) THEN
-                                  SET @rowLabel = @rowName
-                                ELSE
+                                SET @rowName = Field(@row, "property_name")    IF NOT Empty(@rowName) THEN SET @rowName = Replace(Replace(Replace(Trim(@rowName), "&", "&amp;"), "<", "&lt;"), ">", "&gt;") ENDIF
+                                SET @rowRate = Field(@row, "commission_rate")  IF NOT Empty(@rowRate) THEN SET @rowRate = Trim(Replace(@rowRate, "%", "")) ENDIF
+                                IF Empty(@rowName) THEN SET @rowName = "Unnamed property" ENDIF
+                                SET @rowLabel = @rowName
+                                IF NOT Empty(@rowRate) THEN
                                   SET @rowLabel = Concat(@rowName, ": ", @rowRate, "%")
                                 ENDIF
                           ]%%
@@ -404,8 +404,8 @@ ENDIF
         </tr>
 
         <!-- ================= SECTION: primary CTA ================= -->
-        <!-- Two versions of one button. Outlook gets a VML shape (fixed 227x52, so update the width if the label changes);
-             .mso-keep-white keeps its text white in Outlook's dark mode. Everyone else gets a padded link; its gradient and
+        <!-- Two versions of one button. Classic Outlook gets a VML shape (fixed 227x52, so update the width if the label changes);
+             .mso-keep-white keeps its text white in its dark mode. Everyone else gets a padded link; its gradient and
              the gmail-screen/difference layers keep it blue and white in Gmail's dark mode. -->
         <tr>
           <td class="gutter" align="center" bgcolor="#fafafa" style="background-color:#fafafa; padding:24px 40px;">
@@ -497,11 +497,11 @@ ENDIF
         <!-- Non-ASCII characters are written as entities (&szlig; &ndash; &uuml;) so a wrong charset
              somewhere in the sending chain cannot corrupt the legal address. -->
         <tr>
-          <td align="center" bgcolor="#0a1121" background="https://raw.githubusercontent.com/PewPewzxc/case-study-trivago/main/images/bg-navy.png" style="background-color:#0a1121; background-image:url('https://raw.githubusercontent.com/PewPewzxc/case-study-trivago/main/images/bg-navy.png'); background-repeat:repeat;">
-            <!-- Dark mode. The logo is a white image, so no app changes it. The navy behind it is held three ways: a tiny navy
-                 background image in new Outlook, a navy VML panel in classic Outlook (mso-color-alt keeps the text light), and
-                 "light only" in the Gmail app with a Google account. The gmail-screen/difference spans need the style block, which the
-                 Gmail app with a non-Google account drops: there the legal text gets hard to read (open, tests/RESULTS.md round 7). -->
+          <td align="center" bgcolor="#0a1121" style="background-color:#0a1121; background-image:linear-gradient(#0a1121,#0a1121);">
+            <!-- Dark mode. The logo is a white image, so no app changes it. The navy behind it: a gradient for Gmail versions that
+                 ignore "light only" (they invert colors, not gradients; tests/RESULTS.md round 8), a navy VML panel in classic Outlook
+                 (mso-color-alt keeps the text light), and "light only" elsewhere. New Outlook ignores gradients: slate gray, readable.
+                 The gmail-screen/difference spans need the style block, which the Gmail app with a non-Google account drops (round 7). -->
             <!--[if mso]>
             <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:700px; height:194px;"><v:fill type="solid" color="#0a1121"/><v:textbox inset="0,0,0,0">
             <![endif]-->

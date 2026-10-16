@@ -1,5 +1,6 @@
 # Renders an email through Microsoft Word, the engine classic Outlook uses, to tools\word-render\<name>.png.
 # The simulator shows that PNG under the classic Outlook light preview. Light mode only: Word here follows the Office theme.
+# Needs Microsoft Word and Python with pymupdf (pip install pymupdf).
 #
 #   powershell -ExecutionPolicy Bypass -File tools\word_render.ps1 email.html
 param([Parameter(Mandatory = $true)][string]$Html)
@@ -12,7 +13,7 @@ $pdf = Join-Path $env:TEMP "word-render-$name.pdf"
 $png = Join-Path $out "$name.png"
 
 # shortcut: Word hangs at the PDF export when driven straight from this script, but not from a background job
-# (cause not found on 15 Oct 2026). The job also gives a timeout, so a stuck Word can never block forever.
+# (cause not found). The job also gives a timeout, so a stuck Word can never block forever.
 $job = Start-Job -ArgumentList $src, $pdf -ScriptBlock {
     param($src, $pdf)
     $word = New-Object -ComObject Word.Application
@@ -55,7 +56,7 @@ for p in src:
 bottom = max(r[3] for kind, r in page.get_bboxlog() if kind != 'fill-shade' and r[2] > r[0] and r[3] > r[1])
 page.get_pixmap(dpi=96, clip=pymupdf.Rect(0, 0, w, min(h, bottom + 7.5))).save(sys.argv[2])
 '@
-$tmp = Join-Path $out 'stack.py'
+$tmp = Join-Path $env:TEMP 'word-render-stack.py'
 Set-Content -Path $tmp -Value $py -Encoding ASCII
 python -I $tmp $pdf $png
 $failed = $LASTEXITCODE

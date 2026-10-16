@@ -1,7 +1,7 @@
 """Run the AMPscript in an email against test data, without Marketing Cloud.
 
     python tools/ampscript_run.py                     run every case in tests/ampscript/cases.json
-    python tools/ampscript_run.py my-copy.html        run the same cases against another file
+    python tools/ampscript_run.py my-copy.html        run the same cases against another file (outputs are not saved)
     python tools/ampscript_run.py --previews          also rewrite previews/ from the cases marked "preview"
     python tools/ampscript_run.py --demo              only render one email per hotelier in tests/ampscript/demo/
                                                       (edit hoteliers.csv and properties.csv there; no checks)
@@ -12,22 +12,23 @@ AMPscript only runs inside Salesforce Marketing Cloud, and there is no free sand
 executes the part of the language this email uses, so the logic can be tested on any PC:
 
   - VAR, SET, IF / ELSEIF / ELSE / ENDIF, FOR ... TO ... DO / NEXT (its counter must not be declared), comments
-  - inline output (%%=v(@x)=%%) and personalisation strings (%%field%%)
+  - inline output (%%=v(@x)=%%) and personalization strings (%%field%%)
   - the functions in FUNCS below. Anything else stops with an error, so an invented
-    or misspelt function is caught instead of silently printing nothing.
+    or misspelled function is caught instead of silently printing nothing.
 
 It is strict on purpose: Row() past the last row, Field() with an unknown column, a lookup on a data
-extension that does not exist, and a personalisation string with no matching column all stop with an
+extension that does not exist, and a personalization string with no matching column all stop with an
 error. Salesforce's documentation says the last one fails the send; the others are assumptions I could
 not test in Marketing Cloud.
 
-shortcut: it imitates documented behaviour, it is not Marketing Cloud. Formatting details
+shortcut: it imitates documented behavior, it is not Marketing Cloud. Formatting details
 (numbers, dates, character encoding) can differ. The final check is Preview and Test inside
 Marketing Cloud with a test data extension built from the same cases.
 """
 import json
 import re
 import sys
+import tempfile
 from contextlib import redirect_stdout
 from html import unescape
 from io import StringIO
@@ -255,6 +256,7 @@ FUNCS = {
     "empty": lambda ctx, x: text(x) == "",
     "concat": lambda ctx, *xs: "".join(text(x) for x in xs),
     "trim": lambda ctx, x: text(x).strip(),
+    "replace": lambda ctx, s, old, new: text(s).replace(text(old), text(new)),
     "lookuporderedrows": lookup_ordered_rows,
     "rowcount": lambda ctx, rows: len(rows),
     "row": lambda ctx, rows, i: row(rows, i),
@@ -298,7 +300,7 @@ def run(nodes, ctx, out):
             elif name in ctx["subscriber"]:
                 out.append(text(ctx["subscriber"][name]))
             else:
-                raise AmpError(f"personalisation string %%{name}%% has no column")
+                raise AmpError(f"personalization string %%{name}%% has no column")
         elif kind == "set":
             ctx["vars"][node[1]] = evaluate(node[2], ctx)
         elif kind == "if":
@@ -341,7 +343,7 @@ def check_case(case, html):
     positions = [words.find(s) for s in case.get("expect_in_order", [])]
     if -1 in positions or positions != sorted(positions):
         problems.append(f"not in this order: {case['expect_in_order']}")
-    if "%%" in html:
+    if re.search(r"%%[\[=]|%%\w+%%", html):   # a % in the data itself is fine
         problems.append("AMPscript left in the output")
     size = len(html.encode("utf-8"))
     if size > preflight.GMAIL_CLIP_BYTES:
@@ -349,12 +351,12 @@ def check_case(case, html):
     # The template's own checks, on the finished email. Data may contain characters such as
     # u-umlaut; Marketing Cloud encodes those at send time, so only the template is held to ASCII.
     ascii_html = "".join(c if ord(c) < 128 else f"&#{ord(c)};" for c in html)
-    tmp = PROJECT / "tests" / "ampscript" / "out" / "_check.html"
-    tmp.write_text(ascii_html, encoding="utf-8")
-    report = StringIO()
-    with redirect_stdout(report):
-        ok = preflight.check(str(tmp))
-    tmp.unlink()
+    with tempfile.TemporaryDirectory() as folder:
+        tmp = Path(folder) / "check.html"
+        tmp.write_text(ascii_html, encoding="utf-8")
+        report = StringIO()
+        with redirect_stdout(report):
+            ok = preflight.check(str(tmp))
     if not ok:
         problems += [l.strip() for l in report.getvalue().splitlines() if "FAIL" in l]
     return problems
@@ -368,7 +370,8 @@ def write_csv(data, folder):
     tables = {"RateConnect_Test_Sendable": subs, **data["data_extensions"]}
     for name, rows in tables.items():
         columns = list(dict.fromkeys(k for r in rows for k in r))
-        with open(folder / f"{name}.csv", "w", newline="", encoding="utf-8") as f:
+        # utf-8-sig so Excel shows the umlauts. Add your address in a text editor: Excel may turn 10.5 into a date.
+        with open(folder / f"{name}.csv", "w", newline="", encoding="utf-8-sig") as f:
             writer = csv.DictWriter(f, columns)
             writer.writeheader()
             writer.writerows(rows)
@@ -381,20 +384,42 @@ def render_demo(source):
     so they open in Excel; add rows or change names there and run again."""
     import csv
     folder = PROJECT / "tests" / "ampscript" / "demo"
-    read = lambda name: list(csv.DictReader(open(folder / name, encoding="utf-8-sig", newline="")))
+
+    def read(name):
+        # Excel may save as cp1252 and, with German settings, with semicolons. Accept both.
+        raw = (folder / name).read_bytes()
+        try:
+            content = raw.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            content = raw.decode("cp1252")
+        lines = content.splitlines()
+        return list(csv.DictReader(lines, dialect=csv.Sniffer().sniff(lines[0], ",;")))
+
     hoteliers, properties = read("hoteliers.csv"), read("properties.csv")
+    for name, rows, columns in (("hoteliers.csv", hoteliers, ("SubscriberKey", "hotelier_id")),
+                                ("properties.csv", properties, ("hotelier_id", "property_name", "commission_rate"))):
+        missing = [c for c in columns if rows and c not in rows[0]]
+        if missing:
+            sys.exit(f"{name} has no column {', '.join(missing)}. Nothing was changed.")
+    # Render everything first, so a problem in the data never leaves out/ half deleted.
+    emails = {h["SubscriberKey"]: render(source, {k: v for k, v in h.items() if k != "SubscriberKey"},
+                                         {"RateConnect_Properties": properties}) for h in hoteliers}
     out = folder / "out"
     out.mkdir(exist_ok=True)
     for old in out.glob("*.html"):
         old.unlink()
     for h in hoteliers:
-        key = h.pop("SubscriberKey")
-        html = render(source, h, {"RateConnect_Properties": properties})
-        (out / f"{key}.html").write_text(html, encoding="utf-8")
-        print(f"wrote demo/out/{key}.html  ({h.get('hotelier_name') or 'no name'}, {sum(p['hotelier_id'] == h.get('hotelier_id') for p in properties)} properties)")
+        key = h["SubscriberKey"]
+        (out / f"{key}.html").write_text(emails[key], encoding="utf-8")
+        n = sum(p["hotelier_id"].strip().lower() == (h.get("hotelier_id") or "").strip().lower() for p in properties)
+        print(f"wrote demo/out/{key}.html  ({h.get('hotelier_name') or 'no name'}, {n} {'property' if n == 1 else 'properties'})")
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")   # names like "Łukasz" when output is piped
+    unknown = [a for a in sys.argv[1:] if a.startswith("--") and a not in ("--demo", "--previews", "--csv")]
+    if unknown:
+        sys.exit(f"Unknown option {unknown[0]}.\n{__doc__}")
     if "--demo" in sys.argv:
         return render_demo((PROJECT / "email-ampscript.html").read_text(encoding="utf-8"))
     write_previews = "--previews" in sys.argv
@@ -405,6 +430,7 @@ def main():
     source = Path(files[0] if files else PROJECT / data["template"]).read_text(encoding="utf-8")
     out_dir = PROJECT / "tests" / "ampscript" / "out"
     out_dir.mkdir(parents=True, exist_ok=True)
+    save = not files   # a practice copy must not overwrite the template's saved outputs
 
     if "--csv" in sys.argv:
         write_csv(data, PROJECT / "tests" / "ampscript")
@@ -414,8 +440,9 @@ def main():
         try:
             html = render(source, case["subscriber"], case.get("data_extensions", data["data_extensions"]))
             problems = check_case(case, html)
-            (out_dir / f"{case['name']}.html").write_text(html, encoding="utf-8")
-            if write_previews and case.get("preview"):
+            if save:
+                (out_dir / f"{case['name']}.html").write_text(html, encoding="utf-8")
+            if save and write_previews and case.get("preview"):
                 (PROJECT / "previews" / case["preview"]).write_text(html, encoding="utf-8")
         except AmpError as error:
             problems = [f"AMPscript error: {error}"]
@@ -426,7 +453,7 @@ def main():
         print(f"{'PASS' if not problems else 'FAIL'}  {case['name']}: {case['about']}")
         for p in problems:
             print(f"      {p}")
-    print(f"\n{len(data['cases']) - failed} of {len(data['cases'])} cases pass. Outputs: tests/ampscript/out/")
+    print(f"\n{len(data['cases']) - failed} of {len(data['cases'])} cases pass." + (" Outputs: tests/ampscript/out/" if save else ""))
     sys.exit(1 if failed else 0)
 
 

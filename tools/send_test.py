@@ -1,7 +1,7 @@
 """Send one or more of the HTML files to real inboxes for render testing.
 
-    python tools/send_test.py email.html me@gmail.com me@outlook.com me@icloud.com
-    python tools/send_test.py tests/ampscript/demo/out/*.html me@gmail.com      (several files, one login)
+    python tools/send_test.py email.html you@example.com you@example.org      (your own addresses)
+    python tools/send_test.py "tests/ampscript/demo/out/*.html" you@example.com      (several files, one login)
 
 Why a script: pasting HTML into a mail client's compose window does not work as a test. The client
 rewrites the markup on the way out (Outlook runs it through Word, Gmail strips the stylesheet), so
@@ -23,14 +23,15 @@ from pathlib import Path
 SMTP_HOST, SMTP_PORT = "smtp.gmail.com", 465
 
 
-def check(path, html):
+def check(path, html, checked):
     """Stop before sending anything that would arrive broken."""
     local_images = re.findall(r'<img[^>]+src="(?!https://)([^"]+)"', html)
     if local_images:
         sys.exit(f"Not sending {path}: {len(local_images)} image(s) are not absolute https URLs, e.g. {local_images[0]}.\n"
                  "They would arrive broken. Host the images first.")
     # A hosted image that is not uploaded yet looks exactly like a mail-app bug, so check every one loads.
-    urls = sorted(set(re.findall(r'(?:src|background)="(https://[^"]+)"', html) + re.findall(r"url\('?(https://[^')]+)'?\)", html)))
+    urls = sorted(set(re.findall(r'(?:src|background)="(https://[^"]+)"', html) + re.findall(r"url\('?(https://[^')]+)'?\)", html)) - checked)
+    checked.update(urls)   # several files share the same images: check each URL once
     missing = []
     for url in urls:
         try:
@@ -47,15 +48,20 @@ def check(path, html):
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
     # PowerShell does not expand *.html itself, so patterns are expanded here.
     args = [m for a in sys.argv[1:] for m in (sorted(glob.glob(a)) if "*" in a else [a])]
     files = [a for a in args if a.lower().endswith(".html")]
     recipients = [a for a in args if "@" in a]
+    unknown = [a for a in args if a not in files and a not in recipients]
+    if unknown:
+        sys.exit(f"Not an .html file or an email address: {unknown[0]} (a pattern that matched no file looks like this too).\n{__doc__}")
     if not files or not recipients:
         sys.exit(__doc__)
     pages = [(f, open(f, encoding="utf-8").read()) for f in files]
+    checked = set()
     for f, html in pages:
-        check(f, html)
+        check(f, html, checked)
 
     sender = input("Gmail address to send from: ").strip()
     password = getpass.getpass("App password (hidden): ").replace(" ", "")
